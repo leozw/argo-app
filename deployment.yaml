@@ -3,8 +3,6 @@ kind: Deployment
 metadata:
   name: my-app
   namespace: default
-  annotations:
-    notifications.argoproj.io/subscribe.on-rollbacks.rollback: ""
 spec:
   replicas: 1
   selector:
@@ -15,9 +13,9 @@ spec:
       labels:
         app: my-app
     spec:
-      shareProcessNamespace: true
       containers:
         - name: my-app
           image: nginx:latest
           ports:
             - containerPort: 80
+            - containerPort: 8080
