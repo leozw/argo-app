@@ -3,6 +3,8 @@ kind: Deployment
 metadata:
   name: my-app
   namespace: default
+  annotations:
+    notifications.argoproj.io/subscribe.on-rollbacks.rollback: ""
 spec:
   replicas: 1
   selector:
@@ -19,29 +21,3 @@ spec:
           image: nginx:latest
           ports:
             - containerPort: 80
-
-        - name: autoinstrumenter
-          image: grafana/beyla:latest
-          imagePullPolicy: IfNotPresent
-          securityContext:
-            runAsUser: 0
-            privileged: true
-            capabilities:
-              add: ["SYS_ADMIN", "SYS_PTRACE"]
-          env:
-            - name: BEYLA_SERVICE_NAME
-              value: "dotNet-app"
-            - name: BEYLA_METRICS_ENABLED
-              value: "true"
-            - name: BEYLA_OPEN_PORT
-              value: "8080"
-            - name: OTEL_EXPORTER_OTLP_METRICS_ENDPOINT
-              value: "http://opentelemetrycollector.default.svc.cluster.local:4318"
-            - name: BEYLA_LOG_LEVEL
-              value: "DEBUG"
-            - name: OTEL_METRICS_EXPORTER
-              value: "otlp"
-            - name: OTEL_RESOURCE_ATTRIBUTES
-              value: "service.name=dotNet-app"
-            - name: BEYLA_BPF_TRACK_REQUEST_HEADERS
-              value: "true"
